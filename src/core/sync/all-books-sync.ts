@@ -27,20 +27,20 @@ export async function syncAllBooks(
   console.log(`\n=== 开始${useIncremental ? "增量" : "全量"}同步所有书籍 ===`);
 
   try {
-    // 获取书架中的书籍
+     // 获取书架中的书籍 (保留这一行，因为元数据可能需要从书架信息中提取)
     const shelfBooks = await getBookshelfBooks(cookie);
 
     // 获取笔记本中的书籍（有划线的书籍）
     const notebookBooks = await getNotebookBooks(cookie);
 
-    // 合并书籍元数据
+    // 【修改点】只合并笔记本中的书籍，不再以书架为准
     const mergedBooks = await enhanceBookMetadata(
       cookie,
-      shelfBooks,
+      [], // 将原本的 shelfBooks 替换为空数组 []
       notebookBooks
     );
 
-    console.log(`\n准备同步 ${mergedBooks.length} 本书到Notion...`);
+    console.log(`\n检测到有笔记的书籍共 ${notebookBooks.length} 本`);
 
     // 同步结果统计
     let successCount = 0;
